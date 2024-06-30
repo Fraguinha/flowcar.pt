@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flowcar-deployment
+  labels:
+    app: flowcar-webapp
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: flowcar-webapp
+  template:
+    metadata:
+      labels:
+        app: flowcar-webapp
+    spec:
+      containers:
+        - name: flowcar-webapp
+          image: fraguinha/flowcar-webapp:latest
+          imagePullPolicy: Always
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: secrets
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secrets
+                  key: POSTGRES_PASSWORD
+            - name: POSTGRES_SERVICE
+              valueFrom:
+                secretKeyRef:
+                  name: secrets
+                  key: POSTGRES_SERVICE
+            - name: POSTGRES_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: secrets
+                  key: POSTGRES_PORT
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: secrets
+                  key: POSTGRES_DB
+          ports:
+            - containerPort: 8080
