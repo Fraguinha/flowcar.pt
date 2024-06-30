@@ -1,0 +1,17 @@
+resources:
+  - namespaces/database.yaml
+  - namespaces/webapp.yaml
+  - volumes/postgres-persistent-volume-claim.yaml
+  - volumes/postgres-persistent-volume.yaml
+  - deployments/postgres-deployment.yaml
+  - deployments/flowcar-deployment.yaml
+  - jobs/postgres-job.yaml
+  - services/postgres-service.yaml
+  - services/flowcar-service.yaml
+  - ingress/flowcar-ingress.yaml
+
+configMapGenerator:
+  - name: postgres-setup
+    namespace: volumes
+    files:
+      - resources/db.sql

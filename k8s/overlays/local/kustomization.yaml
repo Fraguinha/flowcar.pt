@@ -1,0 +1,17 @@
+resources:
+  - ../../base
+  - ingress/postgres-ingress.yaml
+
+patches:
+  - target:
+      kind: Deployment
+      name: flowcar-deployment
+      namespace: webapp
+    patch: |-
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: flowcar-deployment
+        namespace: webapp
+      spec:
+        replicas: 0
