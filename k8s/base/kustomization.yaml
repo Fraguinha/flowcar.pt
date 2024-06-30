@@ -1,0 +1,14 @@
+resources:
+  - database/persistent-volume-claim.yaml
+  - database/persistent-volume.yaml
+  - database/postgres-deployment.yaml
+  - database/postgres-job.yaml
+  - database/postgres-service.yaml
+  - webapp/flowcar-deployment.yaml
+  - webapp/flowcar-ingress.yaml
+  - webapp/flowcar-service.yaml
+
+configMapGenerator:
+  - name: postgres-setup
+    files:
+      - resources/db.sql

@@ -1,0 +1,48 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "build",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "dependsOn": ["build client", "build server"]
+    },
+    {
+      "label": "build client",
+      "command": "cargo",
+      "args": [
+        "build",
+        "--manifest-path",
+        "${workspaceFolder}/webapp/Cargo.toml",
+        "--package",
+        "flowcar",
+        "--lib",
+        "--target-dir",
+        "${workspaceFolder}/webapp/target/front",
+        "--target",
+        "wasm32-unknown-unknown",
+        "--no-default-features",
+        "--features",
+        "hydrate"
+      ]
+    },
+    {
+      "label": "build server",
+      "command": "cargo",
+      "args": [
+        "build",
+        "--manifest-path",
+        "${workspaceFolder}/webapp/Cargo.toml",
+        "--package",
+        "flowcar",
+        "--bin",
+        "flowcar",
+        "--no-default-features",
+        "--features",
+        "ssr"
+      ]
+    }
+  ]
+}
