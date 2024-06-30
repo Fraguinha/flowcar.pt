@@ -1,0 +1,33 @@
+resources:
+  - ../../base
+
+patches:
+  - target:
+      kind: Deployment
+      name: flowcar-deployment
+    patch: |-
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: flowcar-deployment
+      spec:
+        replicas: 0
+  - target:
+      kind: Ingress
+      name: postgres-ingress
+    patch: |-
+      apiVersion: networking.k8s.io/v1
+      kind: Ingress
+      metadata:
+        name: postgres-ingress
+      spec:
+        rules:
+          - http:
+              paths:
+                - path: /
+                  pathType: Prefix
+                  backend:
+                    service:
+                      name: postgres-service
+                      port:
+                        number: 5432

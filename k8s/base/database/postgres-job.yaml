@@ -1,0 +1,41 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: postgres-job
+spec:
+  ttlSecondsAfterFinished: 3600
+  template:
+    spec:
+      containers:
+        - name: postgres-init
+          image: postgres:16
+          env:
+            - name: PGUSER
+              valueFrom:
+                secretKeyRef:
+                  name: secrets
+                  key: POSTGRES_USER
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secrets
+                  key: POSTGRES_PASSWORD
+            - name: PGHOST
+              valueFrom:
+                secretKeyRef:
+                  name: secrets
+                  key: POSTGRES_SERVICE
+            - name: PGDATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: secrets
+                  key: POSTGRES_DB
+          command: [ "sh", "-c", "until psql -U $PGUSER -h $PGHOST -d $PGDATABASE -f /setup/db.sql 2>/dev/null; do sleep 1; done" ]
+          volumeMounts:
+            - name: setup-volume
+              mountPath: /setup
+      restartPolicy: OnFailure
+      volumes:
+        - name: setup-volume
+          configMap:
+            name: postgres-setup
