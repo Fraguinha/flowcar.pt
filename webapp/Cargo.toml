@@ -1,0 +1,76 @@
+[package]
+name = "flowcar"
+version = "0.1.0"
+edition = "2021"
+
+[package.metadata.leptos]
+output-name = "flowcar"
+site-root = "target/site"
+style-file = "style/main.scss"
+assets-dir = "public"
+site-addr = "127.0.0.1:8080"
+reload-port = 8081
+end2end-cmd = "npx playwright test"
+end2end-dir = "integration"
+browserquery = "defaults"
+env = "DEV"
+bin-features = ["ssr"]
+bin-default-features = false
+lib-features = ["hydrate"]
+lib-default-features = false
+lib-profile-release = "wasm-release"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+anyhow = "1.0"
+console_error_panic_hook = "0.1"
+tracing = { version = "0.1", optional = true }
+axum = { version = "0.7", features = ["macros"], optional = true }
+axum_session = { version = "0.14", optional = true }
+axum_session_auth = { version = "0.14", optional = true }
+axum_session_sqlx = { version = "0.3", features = ["postgres", "tls-rustls"], optional = true }
+tokio = { version = "1", features = ["rt-multi-thread"], optional = true }
+tower = { version = "0.4", optional = true }
+tower-http = { version = "0.5", features = ["fs"], optional = true }
+leptos = { version = "0.6" }
+leptos_axum = { version = "0.6", optional = true }
+leptos_meta = { version = "0.6" }
+leptos_router = { version = "0.6" }
+http = "1"
+chrono = "0.4"
+sqlx = { version = "0.8", features = ["runtime-tokio-rustls", "postgres", "json", "uuid", "chrono"], optional = true }
+uuid = { version = "1.10", features = ["v4", "serde"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+bcrypt = { version = "0.15", optional = true }
+async-trait = { version = "0.1", optional = true }
+
+[features]
+default = ["hydrate", "ssr"]
+hydrate = ["leptos/hydrate", "leptos_meta/hydrate", "leptos_router/hydrate"]
+ssr = [
+    "dep:axum",
+    "dep:leptos_axum",
+    "dep:axum_session",
+    "dep:axum_session_auth",
+    "dep:axum_session_sqlx",
+    "dep:tokio",
+    "dep:tower",
+    "dep:tower-http",
+    "leptos/ssr",
+    "leptos_meta/ssr",
+    "leptos_router/ssr",
+    "dep:tracing",
+    "dep:sqlx",
+    "dep:bcrypt",
+    "dep:async-trait"
+]
+
+[profile.wasm-release]
+inherits = "release"
+opt-level = 'z'
+lto = true
+codegen-units = 1
+panic = "abort"
